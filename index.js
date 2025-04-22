@@ -17,26 +17,34 @@ function addEventListeners() {
         overlay.style.display = 'flex';
     });
 
-    const textarea = document.querySelector(".comment-input");
-    const output = document.querySelector(".comment-output");
-    textarea.addEventListener("input", () => {
-        const parts = highlightUrgency(textarea.value);
-        output.replaceChildren(...parts.map(part => {
-            const tag =
-                part.bold
-                    ? document.createElement("b")
-                    : document.createElement("span");
+    addEventListenerOnTextarea(document);
+}
+
+function addEventListenerOnTextarea(node) {
+    const newTextarea = node.querySelector('.comment-input');
+    const newOutput = node.querySelector('.comment-output');
+    newTextarea.addEventListener('input', () => {
+        const parts = highlightUrgency(newTextarea.value);
+        newOutput.replaceChildren(...parts.map(part => {
+            const tag = part.bold ? document.createElement("b") : document.createElement("span");
             tag.innerText = part.text;
             return tag;
         }));
     });
-
 }
+
 
 function addNewBeverage() {
     const beverages = document.querySelectorAll('.beverage');
     const newNumber = beverages.length + 1;
     const newBeverage = beverages[0].cloneNode(true);
+
+    // Сброс выбранных значений
+    newBeverage.querySelector('select').selectedIndex = 1;
+    newBeverage.querySelector('input[type="radio"][value="usual"]').checked = true;
+    newBeverage.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+    newBeverage.querySelector('.comment-input').value = '';
+    newBeverage.querySelector('.comment-output').textContent = '';
 
     newBeverage.querySelectorAll('input[type="radio"]').forEach((radio) =>
         radio.name = `milk-${newNumber}`
@@ -44,6 +52,8 @@ function addNewBeverage() {
     newBeverage.querySelectorAll('input[type="checkbox"]').forEach((checkbox) =>
         checkbox.name = `options-${newNumber}`
     );
+
+    addEventListenerOnTextarea(newBeverage);
 
     const form = document.querySelector('form');
     form.insertBefore(newBeverage, addBeverageButton.parentElement);
