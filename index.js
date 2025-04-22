@@ -22,12 +22,6 @@ function addNewBeverage() {
     updateForms();
 }
 
-const overlay = document.querySelector('.overlay');
-const closeButton = document.getElementById('close');
-closeButton.addEventListener('click', () => {
-    overlay.style.display = 'none';
-});
-
 
 const popupContent = document.querySelector('.popup__content');
 const form = document.querySelector('form');
@@ -57,6 +51,12 @@ form.addEventListener('submit', (e) => {
         });
     });
 
+    popupContent.innerHTML = `<div class="popup__close" id="close"><div class="x">✕</div></div>`;
+    const closeButton = document.getElementById('close');
+    const overlay = document.querySelector('.overlay');
+    closeButton.addEventListener('click', () => {
+        overlay.style.display = 'none';
+    });
 
     const count = document.createElement('h2');
     count.textContent = `Вы заказали ${drinks.length} ${getDrinkWord(drinks.length)}`;
@@ -150,6 +150,8 @@ function getDrinkWord(count) {
     }
 
     return 'напитков';
+}
+
 function updateForms() {
     updateNumbers();
     updateRemoveButtons();
