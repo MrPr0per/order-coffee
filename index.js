@@ -2,7 +2,36 @@ const addBeverageButton = document.getElementById('add-drink-button');
 addBeverageButton.addEventListener('click', () => addNewBeverage());
 
 updateForms();
+addEventListeners()
 
+function addEventListeners() {
+    const overlay = document.querySelector('.overlay');
+    const closeButton = document.getElementById('close');
+    closeButton.addEventListener('click', () => {
+        overlay.style.display = 'none';
+    });
+
+    const submitButton = document.querySelector('.submit-button');
+    submitButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        overlay.style.display = 'flex';
+    });
+
+    const textarea = document.querySelector(".comment-input");
+    const output = document.querySelector(".comment-output");
+    textarea.addEventListener("input", () => {
+        const parts = highlightUrgency(textarea.value);
+        output.replaceChildren(...parts.map(part => {
+            const tag =
+                part.bold
+                    ? document.createElement("b")
+                    : document.createElement("span");
+            tag.innerText = part.text;
+            return tag;
+        }));
+    });
+
+}
 
 function addNewBeverage() {
     const beverages = document.querySelectorAll('.beverage');
@@ -21,18 +50,6 @@ function addNewBeverage() {
 
     updateForms();
 }
-
-const overlay = document.querySelector('.overlay');
-const closeButton = document.getElementById('close');
-closeButton.addEventListener('click', () => {
-    overlay.style.display = 'none';
-});
-
-const submitButton = document.querySelector('.submit-button');
-submitButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    overlay.style.display = 'flex';
-});
 
 function updateForms() {
     updateNumbers();
@@ -60,4 +77,26 @@ function updateRemoveButtons() {
             updateForms();
         };
     });
+}
+
+function highlightUrgency(text) {
+    const fragments = [];
+    const regex = /(срочно|побыстрее|быстрее|поскорее|скорее|очень нужно)/gi;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+        if (match.index > lastIndex) {
+            const before = text.slice(lastIndex, match.index);
+            fragments.push({text: before, bold: false});
+        }
+        fragments.push({text: match[0], bold: true});
+        lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+        fragments.push({text: text.slice(lastIndex), bold: false});
+    }
+
+    return fragments;
 }
