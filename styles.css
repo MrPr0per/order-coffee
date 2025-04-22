@@ -78,3 +78,16 @@
     cursor: pointer;
 }
 
+.remove-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+fieldset.beverage {
+    position: relative;
+}
